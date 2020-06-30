@@ -7,6 +7,8 @@ protocol Chain {
     func getIdentifier() -> String
     /// 获取下一个责任链实体
     func getNextChain() -> Chain?
+    /// 设置下一个责任链实体
+    func setNextChain(chain: Chain?)
     /// 实际操作过程
     func request(_ completion: (_ error: NSError?) -> (Void))
 }
@@ -32,7 +34,7 @@ extension Chain {
 
 /// 用户名
 class NameChain {
-    var chain: Chain?
+    private var chain: Chain?
 }
 extension NameChain: Chain {
     func isValidate() -> Bool {
@@ -42,6 +44,9 @@ extension NameChain: Chain {
     func getNextChain() -> Chain? {
         return self.chain
     }
+    func setNextChain(chain: Chain?) {
+        self.chain = chain
+    }
     func getIdentifier() -> String {
         return "name"
     }
@@ -49,7 +54,7 @@ extension NameChain: Chain {
 
 /// 手机号
 class PhoneChain {
-    var chain: Chain?
+    private var chain: Chain?
 }
 extension PhoneChain: Chain {
     func isValidate() -> Bool {
@@ -59,6 +64,9 @@ extension PhoneChain: Chain {
     func getNextChain() -> Chain? {
         return self.chain
     }
+    func setNextChain(chain: Chain?) {
+        self.chain = chain
+    }
     func getIdentifier() -> String {
         return "phone"
     }
@@ -66,7 +74,7 @@ extension PhoneChain: Chain {
 
 /// 头部实体
 class Head {
-    var chain: Chain?
+    private var chain: Chain?
 }
 extension Head: Chain {
     func isValidate() -> Bool {
@@ -74,6 +82,9 @@ extension Head: Chain {
     }
     func getNextChain() -> Chain? {
         return self.chain
+    }
+    func setNextChain(chain: Chain?) {
+        self.chain = chain
     }
     func getIdentifier() -> String {
         return "Head"
@@ -84,8 +95,8 @@ let head = Head.init()
 let name = NameChain.init()
 let phone = PhoneChain.init()
 
-head.chain = name
-name.chain = phone
+head.setNextChain(chain: name)
+name.setNextChain(chain: phone)
 
 head.request {
     if let error = $0 {
